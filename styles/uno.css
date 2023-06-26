@@ -20,69 +20,6 @@ body {
   background: url("/images/unoBackground.jpg") center / cover no-repeat fixed;
   filter: grayscale(30%);
 }
-#loginSection {
-  display: none;
-}
-#userNameSection {
-  display: none;
-}
-#gameSection {
-  display: block;
-}
-.loginContent {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-.loginContent h1 {
-  transform: skew(-12deg) rotate(-12deg);
-  font-size: 25vmin;
-  color: var(--white);
-  text-shadow: 1.5vmin 1.5vmin 0 #4a0101;
-}
-.gameButton {
-  cursor: pointer;
-  font-size: 4vmin;
-  padding: 5px 20px;
-  background-color: #0274ba;
-  color: var(--white);
-  border-radius: 8px;
-  outline: none;
-  border: none;
-}
-.gameButton:hover {
-  box-shadow: 2px 2px 4px #4a0101;
-}
-.userNameContent {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  color: var(--white);
-  padding: 20px;
-  background-color: rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  display: flex;
-  flex-direction: column;
-  row-gap: 20px;
-}
-.userNameContent label {
-  font-size: 20px;
-  color: var(--white);
-}
-.userNameContent input {
-  font-size: 20px;
-  padding: 8px 5px;
-  color: var(--white);
-  border: none;
-  outline: none;
-  border-bottom: 2px solid var(--white);
-  background: transparent;
-  margin-bottom: 10px;
-}
 .card {
   width: 116px;
   height: 178px;

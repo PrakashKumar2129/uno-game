@@ -14,39 +14,11 @@
   </head>
   <body onload="gameStart()">
     <div id="container">
-      <div id="loginSection">
-        <div class="loginContent">
-          <h1>UNO!</h1>
-          <button
-            type="submit"
-            id="gameStart"
-            class="gameButton"
-            onclick="startGame()"
-          >
-            start
-          </button>
-        </div>
-      </div>
-
-      <div id="userNameSection">
-        <div class="userNameContent">
-          <label for="userName">Enter your name</label>
-          <input
-            type="text"
-            id="userName"
-            onkeypress="return ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || (event.keyCode == 32))"
-          />
-          <button type="submit" class="gameButton" onclick="getName()">
-            submit
-          </button>
-        </div>
-      </div>
-
-      <div class="spinner">
+      <section class="spinner">
         <div class="loader"></div>
-      </div>
+      </section>
 
-      <div id="gameSection">
+      <section id="gameSection">
         <div class="gameContent">
           <div class="cardSection">
             <div class="playerName">computer</div>
@@ -92,9 +64,9 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div id="modalSection">
+      <section id="modalSection">
         <div class="modalContent">
           <h3>Select Color</h3>
           <div class="colorList">
@@ -116,18 +88,17 @@
             ></div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div id="scoreModalSection">
+      <section id="scoreModalSection">
         <div class="modalContent">
           <h3>Score Board</h3>
           <p>computer : <span id="computerScore"></span></p>
           <p>player : <span id="playerScore"></span></p>
           <p>&#128293;<span id="winner"></span>&#127881;</p>
           <button id="restart" onclick="gameStart()">Restart</button>
-          <!-- <button id="exit" onclick="exit()">Exit</button> -->
         </div>
-      </div>
+      </section>
     </div>
     <script src="scripts/uno.js"></script>
   </body>
