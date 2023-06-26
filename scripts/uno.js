@@ -26,14 +26,14 @@ const skipUnicode = "\uf05e";
 const reverseUnicode = "\uf021";
 const skipIcon = `<i class="fa-solid fa-ban"></i>`;
 const reverseIcon = `<i class="fa-solid fa-arrows-rotate"></i>`;
-const drawTwoCardIcon = `<cardInnerValue></cardInnerValue><cardInnerValue></cardInnerValue>`;
+const drawTwoCardIcon = `<span></span><span></span>`;
 
 //Global variables
 let unoDeck = [];
 let playerDeck = [];
 let computerDeck = [];
 let openDeck = [];
-let colorIndication, timerDelay;
+let colorIndication, timerDelay, spliceIndex, cardGroup, parentDiv;
 let timerStatus = (playerStatus = unoStatus = wildStatus = true);
 
 const gameStart = () => {
@@ -53,11 +53,7 @@ const gameStart = () => {
       computerDeck.length =
       openDeck.length =
         0;
-    drawButton.style.visibility =
-      passButton.style.visibility =
-      unoButton.style.visibility =
-      colorIndicationField.style.visibility =
-        "hidden";
+    buttonHide();
     unoDeck = shuffleDeck(buildDeck());
     dealCard();
     let openCard = unoDeck.pop();
@@ -250,11 +246,7 @@ const pointerAction = () => {
   playerStatus = true;
   let pointerFlag = false;
   for (let iterator of playerDeck)
-    if (
-      iterator.color == colorIndication ||
-      iterator.value == openDeck[openDeck.length - 1].value ||
-      iterator.type == "wild"
-    ) {
+    if (wildCardValidate(iterator)) {
       pointerFlag = true;
       break;
     }
@@ -269,17 +261,19 @@ const pointerAction = () => {
 
 const computerPlay = () => {
   playerStatus = false;
-  let possibleCard = computerDeck.filter((index) => {
-    if (
-      index.color == colorIndication ||
-      index.value == openDeck[openDeck.length - 1].value ||
-      index.type == "wild"
-    )
-      return index;
+  let possibleCard = computerDeck.filter((item) => {
+    if (wildCardValidate(item)) return item;
   });
   if (possibleCard.length != 0)
     playingCard(possibleCard[Math.floor(Math.random() * possibleCard.length)]);
   else getCloseCard("computer");
+};
+
+const buttonHide = () => {
+  drawButton.style.visibility = "hidden";
+  passButton.style.visibility = "hidden";
+  unoButton.style.visibility = "hidden";
+  colorIndicationField.style.visibility = "hidden";
 };
 
 const unoShow = () => {
@@ -300,7 +294,7 @@ const unoShow = () => {
       playerDeck = [...playerDeck, ...penaltyCard];
       createCardElement(playerCardField, penaltyCard);
     }
-  }, 2500);
+  }, 3000);
 };
 
 const wildCardValidate = (closeCard) => {
@@ -330,13 +324,151 @@ const callComputer = () => {
 };
 
 const addCard = (range, addDeck, addElement) => {
-  let drawFourArray = getCard(range);
-  addDeck = [...addDeck, ...drawFourArray];
-  createCardElement(addElement, drawFourArray);
+  let drawCard = getCard(range);
+  addDeck = [...addDeck, ...drawCard];
+  createCardElement(addElement, drawCard);
 };
 
 const chooseColor = () => {
   colorIndication = cardColor[Math.floor(Math.random() * cardColor.length)];
   colorIndicationField.className = colorIndication;
   colorIndicationField.style.visibility = "visible";
+};
+
+const currentColor = (bgColor) => {
+  colorIndication = bgColor;
+  colorModalSection.style.display = "none";
+  if (wildStatus) {
+    callComputer();
+  } else {
+    pointerAction();
+  }
+  if (playerDeck.length == 1) unoShow();
+};
+
+const setCardGroup = (cardDeck, playerField, selectedCard) => {
+  parentDiv = playerField;
+  spliceIndex = cardDeck.findIndex(
+    (item) =>
+      item.type == selectedCard.type &&
+      item.color == selectedCard.color &&
+      item.value == selectedCard.value
+  );
+  cardGroup = cardDeck;
+};
+
+const setPlayerCard = (cardGroup, closeCard, addElement) => {
+  cardGroup.push(closeCard);
+  createCardElement(addElement, [closeCard]);
+};
+
+const playingCard = (cardValue) => {
+  let openCard = openDeck[openDeck.length - 1];
+  buttonHide();
+  if (timerStatus) {
+    timerStatus = false;
+    startTimer();
+  }
+  if (playerStatus) setCardGroup(playerDeck, playerCardField, cardValue);
+  else setCardGroup(computerDeck, computerCardField, cardValue);
+  if (
+    valueAndColorValidate(cardValue, openCard) &&
+    cardValue.type == "number"
+  ) {
+    openCardAdd(cardValue, spliceIndex, cardGroup);
+    removeCardElement(parentDiv, cardValue, cardGroup, spliceIndex);
+    if (parentDiv.id == "playerCard") callComputer();
+    else pointerAction();
+  } else if (
+    valueAndColorValidate(cardValue, openCard) &&
+    (cardValue.value == "reverse" || cardValue.value == "skip")
+  ) {
+    openCardAdd(cardValue, spliceIndex, cardGroup);
+    removeCardElement(parentDiv, cardValue, cardGroup, spliceIndex);
+    if (parentDiv.id == "computerCard") callComputer();
+    else pointerAction();
+  } else if (
+    valueAndColorValidate(cardValue, openCard) &&
+    cardValue.value == "draw2"
+  ) {
+    openCardAdd(cardValue, spliceIndex, cardGroup);
+    removeCardElement(parentDiv, cardValue, cardGroup, spliceIndex);
+    if (parentDiv.id == "playerCard") {
+      addCard(2, computerDeck, computerCardField);
+      pointerAction();
+    } else {
+      addCard(2, playerDeck, playerCardField);
+      callComputer();
+    }
+  } else if (cardValue.value == "draw4") {
+    openCardAdd(cardValue, spliceIndex, cardGroup);
+    removeCardElement(parentDiv, cardValue, cardGroup, spliceIndex);
+    if (parentDiv.id == "playerCard") {
+      wildStatus = false;
+      addCard(4, computerDeck, computerCardField);
+      colorModalSection.style.display = "block";
+    } else {
+      addCard(4, playerDeck, playerCardField);
+      chooseColor();
+      callComputer();
+    }
+  } else if (cardValue.value == "wild") {
+    openCardAdd(cardValue, spliceIndex, cardGroup);
+    removeCardElement(parentDiv, cardValue, cardGroup, spliceIndex);
+    if (parentDiv.id == "playerCard") {
+      wildStatus = true;
+      colorModalSection.style.display = "block";
+    } else {
+      chooseColor();
+      pointerAction();
+    }
+  }
+};
+
+const getCloseCard = (player) => {
+  pointerEventHide();
+  let closeCard = openDeck[openDeck.length - 1];
+  if (wildCardValidate(closeCard) && player == "computer") {
+    setPlayerCard(computerDeck, closeCard, computerCardField);
+    playerStatus = false;
+    playingCard(closeCard);
+  } else if (wildCardValidate(closeCard) && player == "player") {
+    setPlayerCard(playerDeck, closeCard, playerCardField);
+    drawButton.style.visibility = "visible";
+    passButton.style.visibility = "visible";
+    drawButton.addEventListener("click", () => {
+      playerStatus = true;
+      playingCard(playerDeck[playerDeck.length - 1]);
+    });
+    passButton.addEventListener("click", () => {
+      buttonHide();
+      callComputer();
+    });
+  } else if (player == "computer") {
+    setPlayerCard(computerDeck, closeCard, computerCardField);
+    pointerAction();
+  } else if (player == "player") {
+    setPlayerCard(playerDeck, closeCard, playerCardField);
+    callComputer();
+  }
+};
+
+const removeCardElement = (parentDiv, selectedCard, cardGroup, spliceIndex) => {
+  parentDiv.childNodes[spliceIndex].remove();
+  openDeckField.innerHTML = "";
+  createCardElement(openDeckField, [selectedCard]);
+  if (cardGroup.length == 0) {
+    scoreBoard();
+  } else if (parentDiv.id == "computerCard" && cardGroup.length == 1) {
+    computerUno.style.display = "block";
+    setTimeout(() => {
+      computerUno.style.display = "none";
+    }, 1500);
+  } else if (
+    parentDiv.id == "playerCard" &&
+    cardGroup.length == 1 &&
+    selectedCard.type != "wild"
+  ) {
+    unoShow();
+  }
 };
