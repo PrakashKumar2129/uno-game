@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UNO Game</title>
+
+    <link rel="stylesheet" href="styles/uno.css" />
+
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body onload="gameStart()">
+    <div id="container">
+      <div id="loginSection">
+        <div class="loginContent">
+          <h1>UNO!</h1>
+          <button
+            type="submit"
+            id="gameStart"
+            class="gameButton"
+            onclick="startGame()"
+          >
+            start
+          </button>
+        </div>
+      </div>
+
+      <div id="userNameSection">
+        <div class="userNameContent">
+          <label for="userName">Enter your name</label>
+          <input
+            type="text"
+            id="userName"
+            onkeypress="return ((event.keyCode >= 65 && event.keyCode <= 90) || (event.keyCode >= 97 && event.keyCode <= 122) || (event.keyCode == 32))"
+          />
+          <button type="submit" class="gameButton" onclick="getName()">
+            submit
+          </button>
+        </div>
+      </div>
+
+      <div class="spinner">
+        <div class="loader"></div>
+      </div>
+
+      <div id="gameSection">
+        <div class="gameContent">
+          <div class="cardSection">
+            <div class="playerName">computer</div>
+
+            <div class="playingCards" id="computerCard"></div>
+            <div></div>
+            <div class="unoLogo computerUno">
+              <img src="/images/uno.png" alt="" />
+            </div>
+          </div>
+
+          <div class="cardSection">
+            <div class="playerName" id="timer"></div>
+
+            <div class="closeAndOpenDeck">
+              <div id="closeDeck" onclick="getCloseCard('player')">
+                <div class="card">
+                  <p class="backCard bgBlack">
+                    <span class="unoCard"></span>
+                  </p>
+                </div>
+              </div>
+
+              <div id="openDeck"></div>
+              <div id="buttons">
+                <div id="colorIndicator"></div>
+                <div class="gameActionButton">
+                  <button id="draw">Drop</button>
+                  <button id="pass">Pass</button>
+                  <button id="uno">UNO</button>
+                </div>
+              </div>
+            </div>
+            <div></div>
+          </div>
+
+          <div class="cardSection">
+            <div class="playerName">Player</div>
+            <div class="playingCards" id="playerCard"></div>
+            <div></div>
+            <div class="unoLogo playerUno">
+              <img src="/images/uno.png" alt="" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="modalSection">
+        <div class="modalContent">
+          <h3>Select Color</h3>
+          <div class="colorList">
+            <div
+              class="bgRed"
+              onclick="currentColor(event.target.className)"
+            ></div>
+            <div
+              class="bgGreen"
+              onclick="currentColor(event.target.className)"
+            ></div>
+            <div
+              class="bgBlue"
+              onclick="currentColor(event.target.className)"
+            ></div>
+            <div
+              class="bgYellow"
+              onclick="currentColor(event.target.className)"
+            ></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="scoreModalSection">
+        <div class="modalContent">
+          <h3>Score Board</h3>
+          <p>computer : <span id="computerScore"></span></p>
+          <p>player : <span id="playerScore"></span></p>
+          <p>&#128293;<span id="winner"></span>&#127881;</p>
+          <button id="restart" onclick="gameStart()">Restart</button>
+          <!-- <button id="exit" onclick="exit()">Exit</button> -->
+        </div>
+      </div>
+    </div>
+    <script src="scripts/uno.js"></script>
+  </body>
+</html>

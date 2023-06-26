@@ -1,0 +1,378 @@
+@import url("https://fonts.googleapis.com/css?family=Sarpanch:900");
+* {
+  margin: 0;
+  padding: 0;
+}
+:root {
+  --bg-red: #ff0000;
+  --bg-green: #00ff00;
+  --bg-blue: #0000ff;
+  --bg-yellow: #fee12b;
+  --bg-black: #000000;
+  --white: #fefefe;
+}
+body {
+  font-family: "Sarpanch", sans-serif;
+}
+#container {
+  width: 100vw;
+  height: 100vh;
+  background: url("/images/unoBackground.jpg") center / cover no-repeat fixed;
+  filter: grayscale(30%);
+}
+#loginSection {
+  display: none;
+}
+#userNameSection {
+  display: none;
+}
+#gameSection {
+  display: block;
+}
+.loginContent {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.loginContent h1 {
+  transform: skew(-12deg) rotate(-12deg);
+  font-size: 25vmin;
+  color: var(--white);
+  text-shadow: 1.5vmin 1.5vmin 0 #4a0101;
+}
+.gameButton {
+  cursor: pointer;
+  font-size: 4vmin;
+  padding: 5px 20px;
+  background-color: #0274ba;
+  color: var(--white);
+  border-radius: 8px;
+  outline: none;
+  border: none;
+}
+.gameButton:hover {
+  box-shadow: 2px 2px 4px #4a0101;
+}
+.userNameContent {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--white);
+  padding: 20px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+}
+.userNameContent label {
+  font-size: 20px;
+  color: var(--white);
+}
+.userNameContent input {
+  font-size: 20px;
+  padding: 8px 5px;
+  color: var(--white);
+  border: none;
+  outline: none;
+  border-bottom: 2px solid var(--white);
+  background: transparent;
+  margin-bottom: 10px;
+}
+.card {
+  width: 116px;
+  height: 178px;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--bg-black);
+  background-color: var(--white);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: -4px 0px 8px rgba(0, 0, 0, 0.625);
+  position: relative;
+  cursor: pointer;
+}
+.card:hover {
+  top: -5px;
+  box-shadow: 2px 2px 8px 3px #333;
+  /* z-index: 1; */
+}
+.innerCard,
+.backCard,
+.mark {
+  width: 98%;
+  height: 98%;
+  border-radius: 8px;
+}
+.bgBlue {
+  background-color: var(--bg-blue);
+}
+.bgRed {
+  background-color: var(--bg-red);
+}
+.bgGreen {
+  background-color: var(--bg-green);
+}
+.bgYellow {
+  background-color: var(--bg-yellow);
+}
+.bgBlack {
+  background-color: var(--bg-black);
+}
+.innerCard::after,
+.innerCard::before {
+  font-family: "FontAwesome";
+  content: attr(data-set);
+  position: absolute;
+  color: var(--white);
+  font-size: 25px;
+  font-weight: bold;
+  text-shadow: 2px 2px 3px #000000;
+}
+.innerCard::after {
+  bottom: 12px;
+  right: 15px;
+  transform: rotate(180deg);
+}
+.innerCard::before {
+  top: 12px;
+  left: 15px;
+}
+.mark,
+.drawTwoMark {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 45px;
+  color: var(--white);
+  text-shadow: 3px 3px 5px var(--bg-black);
+  text-align: center;
+}
+.mark::after,
+.unoCard::after {
+  content: "";
+  width: 125px;
+  height: 77px;
+  position: absolute;
+  top: 57px;
+  left: 1px;
+  border: 3px solid var(--white);
+  border-radius: 50%;
+  transform: rotate(-37deg);
+  text-align: center;
+}
+.unoCard::after {
+  content: "UNO";
+  font-size: 45px;
+  color: var(--white);
+  background-color: var(--bg-red);
+}
+.drawTwoCard span {
+  width: 35px;
+  height: 50px;
+  background-color: var(--white);
+  border: 1px solid var(--bg-black);
+  position: relative;
+  border-radius: 5px;
+}
+.drawTwoCard span:nth-child(1) {
+  position: absolute;
+  top: 60px;
+  right: 40px;
+}
+.gameContent {
+  width: 100vw;
+  height: 100vh;
+}
+.gameContent > div {
+  height: calc(100vh / 3);
+}
+.cardSection {
+  width: 92%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--white);
+  font-size: 20px;
+  position: relative;
+}
+.playingCards {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.playingCards .card {
+  margin-left: -80px;
+}
+.playerName {
+  margin-left: 20px;
+  min-width: 200px;
+}
+.closeAndOpenDeck {
+  display: flex;
+  align-items: center;
+  column-gap: 15px;
+}
+.card img {
+  width: 120px;
+  height: 180px;
+  border-radius: 9px;
+}
+#openDeck,
+#computerCard,
+#closeDeck,
+#playerCard,
+#buttons {
+  pointer-events: none;
+}
+#modalSection,
+#scoreModalSection {
+  display: none;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(108, 108, 108, 0.549);
+  position: relative;
+  top: -100vh;
+}
+.modalContent {
+  width: 300px;
+  height: 180px;
+  text-align: center;
+  padding: 10px;
+  background-color: #4a0101;
+  border-radius: 12px;
+  position: absolute;
+  color: var(--white);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 3px 3px 4px var(--white);
+}
+.colorList {
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  column-gap: 20px;
+}
+.colorList > div {
+  cursor: pointer;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+}
+.colorList > div:hover {
+  transform: scale(1.05);
+}
+#colorIndicator {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+#buttons {
+  visibility: hidden;
+}
+.gameActionButton {
+  display: flex;
+  flex-direction: column;
+  row-gap: 6px;
+}
+.gameActionButton button {
+  pointer-events: visible;
+  cursor: pointer;
+  padding: 8px 14px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+}
+.gameActionButton button:hover {
+  box-shadow: 2px 2px 3px var(--bg-black);
+}
+#colorIndicator {
+  width: 50px;
+  height: 50px;
+  border-radius: 10px;
+}
+.unoLogo {
+  display: none;
+  position: absolute;
+  top: 30%;
+  left: 30%;
+}
+.unoLogo img {
+  width: 80px;
+  height: 80px;
+}
+#restart,
+#exit {
+  cursor: pointer;
+  width: 100px;
+  margin-top: 25px;
+  padding: 5px;
+  font-size: 18px;
+  border-radius: 5px;
+  background-color: green;
+  border: none;
+  color: white;
+}
+#exit {
+  background-color: var(--bg-red);
+}
+.spinner {
+  margin: 0;
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  place-content: center;
+  place-items: center;
+  grid-auto-flow: column;
+  gap: 50px;
+  color: var(--bg-blue);
+  background-color: rgba(126, 126, 126, 0.855);
+  position: absolute;
+  z-index: 1;
+  visibility: hidden;
+}
+.loader {
+  width: 120px;
+  aspect-ratio: 1;
+  display: grid;
+  -webkit-mask: conic-gradient(from 15deg, #0003, #000);
+  mask: conic-gradient(from 15deg, #0003, #000);
+  animation: load 1s steps(12) infinite;
+}
+.loader,
+.loader:before,
+.loader:after {
+  background: radial-gradient(
+        closest-side at 50% 12.5%,
+        currentColor 90%,
+        #0000 98%
+      )
+      50% 0/20% 80% repeat-y,
+    radial-gradient(closest-side at 12.5% 50%, currentColor 90%, #0000 98%) 0
+      50%/80% 20% repeat-x;
+}
+.loader:before,
+.loader:after {
+  content: "";
+  grid-area: 1/1;
+  transform: rotate(30deg);
+}
+.loader:after {
+  transform: rotate(60deg);
+}
+@keyframes load {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
