@@ -34,7 +34,8 @@ let playerDeck = [];
 let computerDeck = [];
 let openDeck = [];
 let colorIndication, timerDelay, parentDiv, spliceIndex;
-let timerStatus = (playerStatus = wildStatus = true);
+let timerStatus = playerStatus = wildStatus = unoStatus = true;
+
 
 const gameStart = () => {
   spinner.style.visibility = "visible";
@@ -47,12 +48,12 @@ const gameStart = () => {
     playerCardField.innerHTML =
       computerCardField.innerHTML =
       openDeckField.innerHTML =
-        "";
+      "";
     unoDeck.length =
       playerDeck.length =
       computerDeck.length =
       openDeck.length =
-        0;
+      0;
     buttonHide();
     unoDeck = shuffleDeck(buildDeck());
     dealCard();
@@ -97,8 +98,8 @@ const scoreBoard = () => {
     playerPoint == computerPoint
       ? "Draw"
       : playerPoint < computerPoint
-      ? "player won"
-      : "computer won";
+        ? "player won"
+        : "computer won";
 };
 
 const buildDeck = () => {
@@ -285,7 +286,6 @@ const computerPlay = () => {
 
 const unoShow = () => {
   unoButton.style.visibility = "visible";
-  let unoStatus = true;
   unoButton.addEventListener("click", () => {
     unoStatus = false;
     unoButton.style.visibility = "hidden";
@@ -301,7 +301,7 @@ const unoShow = () => {
       playerDeck = [...playerDeck, ...penaltyCard];
       createCardElement(playerCardField, penaltyCard);
     }
-  }, 3000);
+  }, 2000);
 };
 
 const getCloseCard = (player) => {
@@ -342,7 +342,10 @@ const setPlayerCard = (cardGroup, closeCard, addElement) => {
 
 const callComputer = () => {
   pointerEventHide();
-  setTimeout(computerPlay, 2000);
+  if (!unoStatus)
+    setTimeout(computerPlay, 3000);
+  else
+    setTimeout(computerPlay, 2000);
 };
 
 const removeCardElement = (parentDiv, selectedCard, cardGroup, spliceIndex) => {
