@@ -312,3 +312,6 @@ body {
     transform: rotate(360deg);
   }
 }
+.active {
+  color: var(--bg-green);
+}

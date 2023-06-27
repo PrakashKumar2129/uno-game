@@ -16,6 +16,7 @@ const winner = document.querySelector("#winner");
 const computerUno = document.querySelector(".computerUno");
 const playerUno = document.querySelector(".playerUno");
 const spinner = document.querySelector(".spinner");
+const playerName = document.querySelectorAll(".playerName");
 
 //Constants
 const cardNumber = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -34,8 +35,7 @@ let playerDeck = [];
 let computerDeck = [];
 let openDeck = [];
 let colorIndication, timerDelay, parentDiv, spliceIndex;
-let timerStatus = playerStatus = wildStatus = unoStatus = true;
-
+let timerStatus = (playerStatus = wildStatus = unoStatus = true);
 
 const gameStart = () => {
   spinner.style.visibility = "visible";
@@ -48,12 +48,12 @@ const gameStart = () => {
     playerCardField.innerHTML =
       computerCardField.innerHTML =
       openDeckField.innerHTML =
-      "";
+        "";
     unoDeck.length =
       playerDeck.length =
       computerDeck.length =
       openDeck.length =
-      0;
+        0;
     buttonHide();
     unoDeck = shuffleDeck(buildDeck());
     dealCard();
@@ -98,8 +98,8 @@ const scoreBoard = () => {
     playerPoint == computerPoint
       ? "Draw"
       : playerPoint < computerPoint
-        ? "player won"
-        : "computer won";
+      ? "player won"
+      : "computer won";
 };
 
 const buildDeck = () => {
@@ -159,12 +159,6 @@ const dealCard = () => {
     else playerDeck.push(unoDeck.pop());
 };
 
-const setImage = (imageSource) => {
-  let img = document.createElement("img");
-  img.setAttribute("src", `${imageSource}`);
-  return img;
-};
-
 const setDataSet = (cardEdgeValue, cardCenterValue, cardValue, setValue) => {
   cardEdgeValue.setAttribute("data-set", `${cardValue}`);
   cardCenterValue.innerHTML = setValue;
@@ -184,6 +178,7 @@ const createCardElement = (card, cardGroup) => {
     let cardSection = document.createElement("div");
     let cardEdgeValue = document.createElement("p");
     let cardCenterValue = document.createElement("cardInnerValue");
+    let image = document.createElement("img");
     cardSection.className = "card";
     if (card.id === "computerCard") {
       cardEdgeValue.className = `backCard bgBlack`;
@@ -214,11 +209,13 @@ const createCardElement = (card, cardGroup) => {
         cardSection.appendChild(
           setDataSet(cardEdgeValue, cardCenterValue, "+2", drawTwoCardIcon)
         );
-      } else if (cardValue.value == "wild")
-        cardSection.appendChild(setImage("/images/wild.webp"));
-      else if (cardValue.value == "draw4")
-        cardSection.appendChild(setImage("/images/wild4.webp"));
-      else
+      } else if (cardValue.value == "wild") {
+        image.src = `images/${cardValue.value}.webp`;
+        cardSection.append(image);
+      } else if (cardValue.value == "draw4") {
+        image.src = `images/${cardValue.value}.webp`;
+        cardSection.append(image);
+      } else
         cardSection.appendChild(
           setDataSet(
             cardEdgeValue,
@@ -342,19 +339,16 @@ const setPlayerCard = (cardGroup, closeCard, addElement) => {
 
 const callComputer = () => {
   pointerEventHide();
-  if (!unoStatus)
-    setTimeout(computerPlay, 3000);
-  else
-    setTimeout(computerPlay, 2000);
+  if (!unoStatus) setTimeout(computerPlay, 2000);
+  else setTimeout(computerPlay, 1000);
 };
 
 const removeCardElement = (parentDiv, selectedCard, cardGroup, spliceIndex) => {
   openDeckField.innerHTML = "";
   parentDiv.childNodes[spliceIndex].remove();
   createCardElement(openDeckField, [selectedCard]);
-  if (cardGroup.length == 0) {
-    scoreBoard();
-  } else if (parentDiv.id == "computerCard" && cardGroup.length == 1) {
+  if (cardGroup.length == 0) scoreBoard();
+  else if (parentDiv.id == "computerCard" && cardGroup.length == 1) {
     computerUno.style.display = "block";
     setTimeout(() => {
       computerUno.style.display = "none";
@@ -363,9 +357,8 @@ const removeCardElement = (parentDiv, selectedCard, cardGroup, spliceIndex) => {
     parentDiv.id == "playerCard" &&
     cardGroup.length == 1 &&
     selectedCard.type != "wild"
-  ) {
+  )
     unoShow();
-  }
 };
 
 const setCardGroup = (cardDeck, playerField, selectedCard) => {
