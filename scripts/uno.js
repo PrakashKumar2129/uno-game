@@ -371,32 +371,6 @@ const setCardGroup = (cardDeck, playerField, selectedCard) => {
   );
 };
 
-const valueAndColorValidate = (selectedCard, openCard) => {
-  return (
-    selectedCard.value == openCard.value ||
-    selectedCard.color == colorIndication
-  );
-};
-
-const numberValidate = (cardValue, openCard) => {
-  return (
-    valueAndColorValidate(cardValue, openCard) && cardValue.type == "number"
-  );
-};
-
-const skipValidate = (cardValue, openCard) => {
-  return (
-    valueAndColorValidate(cardValue, openCard) &&
-    (cardValue.value == "reverse" || cardValue.value == "skip")
-  );
-};
-
-const drawTwoValidate = (cardValue, openCard) => {
-  return (
-    valueAndColorValidate(cardValue, openCard) && cardValue.value == "draw2"
-  );
-};
-
 const chooseColor = () => {
   colorIndication = cardColor[Math.floor(Math.random() * cardColor.length)];
   colorIndicationField.className = colorIndication;
@@ -411,21 +385,76 @@ const currentColor = (bgColor) => {
   if (playerDeck.length == 1) unoShow();
 };
 
-const openCardAdd = (parentDiv, selectedCard, cardGroup, spliceIndex) => {
-  openDeck.push(selectedCard);
-  colorIndication = selectedCard.color;
-  removeCardElement(parentDiv, selectedCard, cardGroup, spliceIndex);
-};
-
 const drawAction = (range, addGroup, addElement) => {
   let drawCard = getCard(range);
   addGroup.push(...drawCard);
   createCardElement(addElement, drawCard);
 };
 
+const drawFourValidate = (parentDiv, cardValue, spliceIndex) => {
+  if (parentDiv.id == "playerCard") {
+    wildStatus = false;
+    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
+    drawAction(4, computerDeck, computerCardField);
+    pointerAction();
+    colorModalSection.style.display = "block";
+  } else {
+    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
+    chooseColor();
+    drawAction(4, playerDeck, playerCardField);
+    callComputer();
+  }
+};
+
+const wildValidate = (parentDiv, cardValue, spliceIndex) => {
+  if (parentDiv.id == "playerCard") {
+    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
+    wildStatus = true;
+    colorModalSection.style.display = "block";
+  } else {
+    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
+    chooseColor();
+    pointerAction();
+  }
+};
+
+const drawValidate = (parentDiv, cardValue, spliceIndex) => {
+  if (parentDiv.id == "playerCard") {
+    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
+    drawAction(2, computerDeck, computerCardField);
+    pointerAction();
+  } else {
+    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
+    drawAction(2, playerDeck, playerCardField);
+    callComputer();
+  }
+};
+
 const numberAction = (parentDiv, cardValue, cardValues, spliceIndex) => {
   cardValues.splice(spliceIndex, 1);
-  openCardAdd(parentDiv, cardValue, cardValues, spliceIndex);
+  openDeck.push(cardValue);
+  colorIndication = cardValue.color;
+  removeCardElement(parentDiv, cardValue, cardValues, spliceIndex);
+};
+
+const numberValidate = (parentDiv, cardValue, spliceIndex) => {
+  if (parentDiv.id == "playerCard") {
+    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
+    callComputer();
+  } else {
+    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
+    pointerAction();
+  }
+};
+
+const skipValidate = (parentDiv, cardValue, spliceIndex) => {
+  if ((parentDiv.id = "computerCard")) {
+    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
+    callComputer();
+  } else {
+    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
+    pointerAction();
+  }
 };
 
 const playingCard = (cardValue) => {
@@ -438,59 +467,23 @@ const playingCard = (cardValue) => {
   if (playerStatus) setCardGroup(playerDeck, playerCardField, cardValue);
   else setCardGroup(computerDeck, computerCardField, cardValue);
 
-  if (numberValidate(cardValue, openCard) && parentDiv.id == "playerCard") {
-    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
-    callComputer();
-  } else if (
-    numberValidate(cardValue, openCard) &&
-    parentDiv.id == "computerCard"
-  ) {
-    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
-    pointerAction();
-  } else if (
-    skipValidate(cardValue, openCard) &&
-    parentDiv.id == "computerCard"
-  ) {
-    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
-    callComputer();
-  } else if (
-    skipValidate(cardValue, openCard) &&
-    parentDiv.id == "playerCard"
-  ) {
-    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
-    pointerAction();
-  } else if (
-    drawTwoValidate(cardValue, openCard) &&
-    parentDiv.id == "playerCard"
-  ) {
-    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
-    drawAction(2, computerDeck, computerCardField);
-    pointerAction();
-  } else if (
-    drawTwoValidate(cardValue, openCard) &&
-    parentDiv.id == "computerCard"
-  ) {
-    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
-    drawAction(2, playerDeck, playerCardField);
-    callComputer();
-  } else if (cardValue.value == "draw4" && parentDiv.id == "playerCard") {
-    wildStatus = false;
-    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
-    drawAction(4, computerDeck, computerCardField);
-    pointerAction();
-    colorModalSection.style.display = "block";
-  } else if (cardValue.value == "draw4" && parentDiv.id == "computerCard") {
-    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
-    chooseColor();
-    drawAction(4, playerDeck, playerCardField);
-    callComputer();
-  } else if (cardValue.value == "wild" && parentDiv.id == "playerCard") {
-    numberAction(parentDiv, cardValue, playerDeck, spliceIndex);
-    wildStatus = true;
-    colorModalSection.style.display = "block";
-  } else if (cardValue.value == "wild" && parentDiv.id == "computerCard") {
-    numberAction(parentDiv, cardValue, computerDeck, spliceIndex);
-    chooseColor();
-    pointerAction();
-  }
+  if (
+    (cardValue.value == openCard.value || cardValue.color == colorIndication) &&
+    cardValue.type == "number"
+  )
+    numberValidate(parentDiv, cardValue, spliceIndex);
+  else if (
+    (cardValue.value == openCard.value || cardValue.color == colorIndication) &&
+    (cardValue.value == "skip" || cardValue.value == "reverse")
+  )
+    skipValidate(parentDiv, cardValue, spliceIndex);
+  else if (
+    (cardValue.value == openCard.value || cardValue.color == colorIndication) &&
+    cardValue.value == "draw2"
+  )
+    drawValidate(parentDiv, cardValue, spliceIndex, openCard);
+  else if (cardValue.value == "draw4")
+    drawFourValidate(parentDiv, cardValue, spliceIndex);
+  else if (cardValue.value == "wild")
+    wildValidate(parentDiv, cardValue, spliceIndex);
 };
